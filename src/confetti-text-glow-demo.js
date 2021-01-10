@@ -5,8 +5,6 @@ import {
 	Mesh,
 	Group,
 	MeshNormalMaterial,
-	FontLoader,
-	TextGeometry,
 	PlaneGeometry,
 	Box3,
 	Vector2,
@@ -19,7 +17,8 @@ import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 import { FXAAShader } from "three/examples/jsm/shaders/FXAAShader.js";
 import helvetikerRegularJson from "three/examples/fonts/helvetiker_bold.typeface.json"; // TODO: Add font license if published to web. https://github.com/mrdoob/three.js/blob/master/examples/fonts/LICENSE
-import { makeCentered } from "./positioning";
+
+import { createFontGroup } from "./3d-text";
 
 const renderer = new WebGLRenderer();
 renderer.setPixelRatio(window.devicePixelRatio || 1);
@@ -43,22 +42,6 @@ orbitControls.maxPolarAngle = Math.PI * (2 / 3);
 orbitControls.minPolarAngle = Math.PI * (1 / 3);
 orbitControls.minDistance = 100;
 orbitControls.maxDistance = 280;
-
-const font = new FontLoader().parse(helvetikerRegularJson);
-const fontGeometry = new TextGeometry("GLOW", {
-	font,
-	size: 24,
-	height: 5,
-	curveSegments: 12,
-	bevelEnabled: false,
-});
-const fontMaterial = new MeshNormalMaterial();
-const fontMesh = new Mesh(fontGeometry, fontMaterial);
-makeCentered(fontMesh);
-
-const fontGroup = new Group();
-fontGroup.add(fontMesh);
-scene.add(fontGroup);
 
 const confettiBox = new Box3(new Vector3(-1000, -1000, -1000), new Vector3(1000, 1000, -100)); // Box within which to render confetti
 const confetti = [];
@@ -114,6 +97,13 @@ function step(duration) {
 		piece.material.opacity = new Vector3(0, 0, 1).dot(rotatedVector);
 	}
 }
+
+window
+	.fetch("https://patricks-first-node-function-app.azurewebsites.net/api/choose")
+	.then((response) => response.json())
+	.then(({ name }) => {
+		scene.add(createFontGroup({ text: `${name}!`, size: 24, height: 5, fontJson: helvetikerRegularJson }));
+	});
 
 // Add render passes
 const composer = new EffectComposer(renderer);
