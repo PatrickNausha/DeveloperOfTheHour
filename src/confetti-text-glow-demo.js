@@ -20,7 +20,6 @@ import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 import { FXAAShader } from "three/examples/jsm/shaders/FXAAShader.js";
 import helvetikerRegularJson from "three/examples/fonts/helvetiker_bold.typeface.json"; // TODO: Add font license if published to web. https://github.com/mrdoob/three.js/blob/master/examples/fonts/LICENSE
 import { makeCentered } from "./positioning";
-import { updateStats, toggleStats } from "./debug-stats";
 
 const renderer = new WebGLRenderer();
 renderer.setPixelRatio(window.devicePixelRatio || 1);
@@ -116,9 +115,6 @@ function step(duration) {
 	}
 }
 
-// Show stats
-toggleStats();
-
 // Add render passes
 const composer = new EffectComposer(renderer);
 composer.setSize(window.innerWidth, window.innerHeight);
@@ -149,6 +145,5 @@ function animate(timeStamp) {
 
 	composer.render(scene, camera);
 	lastTimeStamp = timeStamp;
-	updateStats();
 }
 requestAnimationFrame(animate);
